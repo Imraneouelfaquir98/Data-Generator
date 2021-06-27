@@ -11,18 +11,15 @@ def factorial(n):
 def pk(lmbda, k):
     return np.exp(-lmbda) * (np.power(lmbda, k)/factorial(k))
 
-def generate_data(lambdas, T = 100, file_name = "data.csv"):
-    X = np.array([int(t) for t in range(T)]).astype(int).reshape(T,1)
-    for i in range(lambdas.shape[0]):
-        C = np.array([])
-        for t in range(T):
-            if np.random.uniform(0,1) < pk(lambdas[i], 1):
-                C = np.append(C, 1).astype(int)
-            else:
-                C = np.append(C, 0).astype(int)
-        X = np.append(X, C.reshape(T, 1), axis = 1)
-    head  = ["Time"]
-    head += ["Customer_"+str(i+1) for i in range(lambdas.shape[0])]
+def generate_data(lambdas, customer_coors, T = 480, file_name = "data.csv"):
+    req = 1
+    X = np.array([ 0, 70, 70,-1]).reshape(1, 4)
+    for t in range(T):
+        for c in range(lambdas.shape[0]):
+            if np.random.uniform(0,1) < pk(lambdas[c], 1):
+                X = np.append(X, np.array([ req, customer_coors[c][0], customer_coors[c][1], t]).reshape(1, 4), axis = 0)
+                req += 1
+    head  = [ "Req", "X_Coor", "Y_Coor", "Arr"]
     df = pd.DataFrame(X)
     df.columns = head
     return df.to_csv(file_name, index = False)
@@ -30,6 +27,8 @@ def generate_data(lambdas, T = 100, file_name = "data.csv"):
 nbr_customers = 10
 nbr_dataset   = 10
 
-lambdas = np.array([0.2 for i in range(nbr_customers)])
+customer_coors = np.random.randint(0, 200, (nbr_customers,2))
+lambdas = np.array([0.02 for i in range(nbr_customers)])
+
 for i in range(nbr_dataset):
-    generate_data(lambdas, T = 480, file_name = 'data_'+str(i+1)+'.csv')
+    generate_data(lambdas, customer_coors, file_name = 'data_'+str(i+1)+'.csv')
