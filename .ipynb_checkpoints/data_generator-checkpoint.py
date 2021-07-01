@@ -28,8 +28,7 @@ nbr_customers = 10
 nbr_dataset   = 10
 
 customer_coors = np.random.randint(0, 200, (nbr_customers,2))
-lambdas = np.array([0.002 for i in range(nbr_customers)])
+lambdas = np.array([0.02 for i in range(nbr_customers)])
 
-generate_data(lambdas, customer_coors, file_name = 'data.csv')
-# for i in range(nbr_dataset):
-    
+for i in range(nbr_dataset):
+    generate_data(lambdas, customer_coors, file_name = 'data_'+str(i+1)+'.csv')
