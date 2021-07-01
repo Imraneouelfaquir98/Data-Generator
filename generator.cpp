@@ -17,7 +17,6 @@ void generator(
 		string                 filename
 	);
 
-template <typename T> void   print(vector<vector<T>> X);
 template <typename T> string array_to_string(vector<T> V);
 
 int main(int argc, char const *argv[])
@@ -94,14 +93,6 @@ double random_uniform(){
 	generator.close();
 	return (double)x0/2147483648;
 
-}
-
-template <typename T> void print(vector<vector<T>> X){
-    for(int i=0; i<X.size(); i++){
-        for (int j = 0; j < X[i].size(); ++j)
-            cout<<"\t"<<X[i][j];
-        cout<<endl;
-    }
 }
 
 template <typename T> string array_to_string(vector<T> V){
