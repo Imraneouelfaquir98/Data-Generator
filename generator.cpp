@@ -77,18 +77,19 @@ void generator(
 
 double random_uniform(){
 
-    fstream generator("x0", ios::in);
+    fstream generator(".x0", ios::in);
 
     if(!generator.is_open()){
-    	fstream x_0("x0", ios::out);
+    	fstream x_0(".x0", ios::out);
     	x_0<<to_string(765502822);
     	x_0.close();
-    	generator.open("x0", ios::in);
+    	generator.open(".x0", ios::in);
     }
     long long int x0;
 	generator>>x0;
+	x0 = (x0 > 0)?x0:765502822;
 	generator.close();
-	generator.open("x0", ios::out | ios::trunc);
+	generator.open(".x0", ios::out | ios::trunc);
 	generator<<to_string((65539*x0)%2147483648);
 	generator.close();
 	return (double)x0/2147483648;
