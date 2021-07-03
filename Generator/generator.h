@@ -24,8 +24,4 @@ public:
 			int                    T             , 
 			string                 filename
 		);
-
-	// Generator();
-	// ~Generator();
-	
 };
