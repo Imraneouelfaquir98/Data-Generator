@@ -1,5 +1,14 @@
 #include "generator.h"
 
+Generator::Generator(){
+	this->time_window_type = "d1";
+}
+
+Generator::Generator(string time_window_type){
+	this->time_window_type = time_window_type;
+}
+
+
 long long int Generator::factoriel(int n){
 	if(n  < 0) throw runtime_error("Error: n must be n >=0");
 	if(n <= 1) return 1;
@@ -10,7 +19,7 @@ double Generator::pk(double lambda, int k){
 	return exp(-lambda)*pow(lambda, k)/factoriel(k);
 }
 
-void Generator::generate(
+void Generator::fit(
 		vector       <int>     customers_id  ,
 		vector       <double>  lambdas       , 
 		vector<vector<double>> customer_coors, 
@@ -22,17 +31,21 @@ void Generator::generate(
 	else{
 		data<<"Max Distance From Depot\n";
 		data<<maxDistanceFromDepot(customer_coors);
-		vector<int> X = {0, (int)customer_coors[0][0], (int)customer_coors[0][1],-1};
-		data<<"\nReq\tX_Coor\tY_Coor\tArr\n";
+		vector<int> X = {0, (int)customer_coors[0][0], (int)customer_coors[0][1], 0, 0, -1};
+		data<<"\nId\tX_Coor\tY_Coor\ttw_start\ttw_end\tArr\n";
 		data<<array_to_string(X);
-		int req = 1;
+
+		int req = 1, tw_start, tw_end;
 		for(int t=0; t<T; t++){
 			for(int customer=1; customer<=(int)lambdas.size(); customer++){
 				if(random_uniform() < pk(lambdas[customer-1], 1)){
+					setTimeWindow(&tw_start, &tw_end, t);
 					X = {
-						req,
+						customer,
 						(int)customer_coors[customer][0], 
-						(int)customer_coors[customer][1], 
+						(int)customer_coors[customer][1],
+						tw_start,
+						tw_end,
 						t
 					};
 					data<<array_to_string(X);
@@ -44,7 +57,34 @@ void Generator::generate(
 	}
 }
 
-void Generator::function(vector<double> lambdas, string inputfile, string outputfile){
+void Generator::setTimeWindow(int * tw_start, int * tw_end, int time_request){
+	if(time_window_type == "d2"){
+		*tw_start	=	 time_request;
+		*tw_end		=	*tw_start + 2*60;
+	}else if (time_window_type == "f"){	
+		*tw_start	=	 time_request + 60;
+		*tw_end		=	*tw_start + 60;
+	}else if (time_window_type == "r" ){
+		int min 	=	 480 - time_request;
+		int max 	=	 480;
+		*tw_start 	=	 random_uniform()*(max - min) + min;
+		*tw_end		=	*tw_start + 60;
+	}else if (time_window_type == "h" ){
+		int min 	=	 (time_request + (60 - time_request%60))/60;
+		int max 	=	 (time_request - 60*min)/60 + min + 1;
+		double u 	=	 random_uniform() * (double)(max - min) + (double)min;
+		*tw_start	=	 ((u-(int)u > 0.5)? (int)u + 1 : (int)u) * 60;
+		if(*tw_start > 480){
+			*tw_start = 480;
+		}
+		*tw_end		=	*tw_start + 60;
+	}else{
+		*tw_start	= 	 time_request;
+		*tw_end		= 	*tw_start + 60;
+	}
+}
+
+void Generator::generate(vector<double> lambdas, string inputfile, string outputfile){
 	ifstream myFile(inputfile);
 
     if(!myFile.is_open())
@@ -76,7 +116,7 @@ void Generator::function(vector<double> lambdas, string inputfile, string output
     }   
     myFile.close();
 
-    generate(
+    fit(
 		customers_id  ,
 		lambdas       , 
 		customers_coors, 
@@ -120,7 +160,7 @@ double Generator::random_uniform(){
 template <typename T> string Generator::array_to_string(vector<T> V){
 	string str = "";
 	for(int i=0; i<(int)V.size(); i++){
-		str += to_string(V[i]) + "\t";
+		str += to_string(V[i]) + "\t\t";
 	}
 	return str + "\n";
 }

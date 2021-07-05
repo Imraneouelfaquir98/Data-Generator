@@ -6,7 +6,7 @@ using namespace std;
 
 int main(int argc, char const *argv[])
 {
-	Generator generator = Generator();
+	Generator generator = Generator("d1");
 
 	DIR *dir; struct dirent *diread;
     vector<string> files;
@@ -22,7 +22,7 @@ int main(int argc, char const *argv[])
 
     for (int i=0; i<(int)files.size(); i++){
         if(files[i].length() > 4 and files[i].substr(files[i].length()-4, 4) == ".txt"){
-            generator.function(
+            generator.generate(
                     vector<double>(100, 0.002), 
                     "./solomon-100/"+files[i], 
                     "./imrane/data_" + to_string(i+1) + ".txt"
