@@ -29,8 +29,8 @@ void Generator::fit(
 	fstream data (filename, ios::out | ios::trunc);
 	if(!data.is_open()) throw runtime_error("Error: Could not create \""+filename+"\", try later.");
 	else{
-		data<<"Max Distance From Depot\n";
-		data<<maxDistanceFromDepot(customer_coors);
+		data<<"Max_Dist_From_Depot\tTime window type\n";
+		data<<to_string(maxDistanceFromDepot(customer_coors)) + "\t\t\t" + time_window_type;
 		vector<int> X = {0, (int)customer_coors[0][0], (int)customer_coors[0][1], 0, 0, -1};
 		data<<"\nId\tX_Coor\tY_Coor\ttw_start\ttw_end\tArr\n";
 		data<<array_to_string(X);

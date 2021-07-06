@@ -19,6 +19,7 @@ public:
 	double 			maxDistanceFromDepot(vector<vector<double>> customer_coors);
 	void 			setTimeWindow(int * tw_start, int * tw_end, int time_request);
 	void 			generate (vector<double> lambdas, string inputfile, string outputfile);
+	int				timeWindowIndex();
 	template <typename T> string array_to_string(vector<T> V);
 	void fit (
 			vector       <int>     customers_id  ,
