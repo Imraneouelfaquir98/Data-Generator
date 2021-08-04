@@ -1,5 +1,7 @@
 #include "generator.h"
 
+long long int X = 765502822;
+
 Generator::Generator(){
 	this->time_window_type = "d1";
 }
@@ -137,24 +139,8 @@ double Generator::maxDistanceFromDepot(vector<vector<double>> customer_coors){
 
 
 double Generator::random_uniform(){
-
-    fstream Generator(".x0", ios::in);
-
-    if(!Generator.is_open()){
-    	fstream x_0(".x0", ios::out);
-    	x_0<<to_string(765502822);
-    	x_0.close();
-    	Generator.open(".x0", ios::in);
-    }
-    long long int x0;
-	Generator>>x0;
-	x0 = (x0 > 0)?x0:765502822;
-	Generator.close();
-	Generator.open(".x0", ios::out | ios::trunc);
-	Generator<<to_string((65539*x0)%2147483648);
-	Generator.close();
-	return (double)x0/2147483648;
-
+	X = (65539*X)%2147483648;
+	return (double)X/2147483648;
 }
 
 template <typename T> string Generator::array_to_string(vector<T> V){
